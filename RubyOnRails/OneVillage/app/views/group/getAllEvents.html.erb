@@ -1,0 +1,77 @@
+<div id="main">
+	
+	<p>
+				<%= link_to "Group", home_group_path %>
+			</p>
+		<h1> All Events</h1>
+	
+		<%#=@array %>
+
+
+	
+	<table border="1" >
+		<tr>
+				<th>Link</th>
+				<th>Event Id</th>				
+				<th>Group Id</th>
+				<th>Topic</th>
+				<th>Location</th>
+				<th>Start Time ID</th>
+				<th>End Time</th>
+				<th>Content</th>
+				<th>Owner ID</th>
+				<th>Time Created</th>
+				
+				
+				
+		</tr>
+		
+		<% @array.each do |array| %>
+		
+		
+				<tr>
+			
+					<td>
+						<%= link_to "Get this event" , :controller => "group" , :action => "getEvent" , :groupId => array["groupId"], :eventId => array["eventId"] %>
+					</td>
+					<td>
+					 	<%= array["eventId"] %>
+					</td>
+					<td>
+						<%= array["groupId"] %>
+					</td>	
+					<td>
+						<%= array["topic"] %>
+					</td>
+					
+					<td>
+						<%= array["location"] %>
+					</td>
+					<td>
+						<%= array["startTime"] %>
+					</td>	
+						<td>
+						<%= array["endTime"] %>
+					</td>
+					<td>
+						<%= array["content"] %>
+					</td>
+					<td>
+						<%=  array["userId"] %>
+					</td>
+					<td>
+						<%=  array["timestamp"] %>
+					</td>
+					
+					
+						
+</tr>
+				<%end%>	
+			
+	
+	
+	
+
+	</table>
+	
+</div>

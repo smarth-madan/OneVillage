@@ -1,0 +1,52 @@
+
+<div id="main">
+	<h1>Welcome to the Photo strand</h1>
+	<h2>Please pick an option</h2>
+
+	<table border="1">
+		<tr>
+			<td>
+				<h3>Albums/Photos</h3>
+			</td>
+			<td>
+				<h3>Tagging Photos</h3>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<table>
+				<tr>
+					<td><%= link_to "Create Album" , :controller => "home" , :action => "createalbum" %></td>
+				</tr>
+				<tr>
+					<td><%= link_to "Get all Albums" , :controller => "photo" , :action => "getAllAlbums" %></td>
+				</tr>
+				<tr>
+					<td><%= link_to "Get all Albums by user" , :controller => "home" , :action => "getAllAlbumsByUser" %></td>
+				</tr>
+				<tr>
+					<td><%= link_to "Add Photo" , :controller => "home" , :action => "addphoto" %></td>
+				</tr>
+				</table>
+			</td>
+			<td>
+				<table>
+				<tr>
+					<td><%= link_to "Associate Photo to Article" , :controller => "home" , :action => "associatephototoarticle" %></td>
+				</tr>
+				<tr>
+					<td><%= link_to "Associate Photo to Group" , :controller => "home" , :action => "associatephototocommunity" %></td>
+				</tr>
+				<tr>
+					<td><%= link_to "Get Photo by Group" , :controller => "home" , :action => "getphotobycommunity" %></td>
+				</tr>
+				<tr>
+					<td><%= link_to "Get Photo by Article" , :controller => "home" , :action => "getphotobyarticle" %></td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+		
+	</table>
+		
+</div>

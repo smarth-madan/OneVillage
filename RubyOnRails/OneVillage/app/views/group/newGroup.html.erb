@@ -1,0 +1,33 @@
+<div id="main">
+	
+	<%= form_tag( :controller => "group" , :action => "createGroup") do |f| %>
+	<div class = "field">
+		<table>
+		<tr>
+			<td>Owner ID:</td>
+			<td><%= text_field_tag :userId,cookies["_auth"] , :disabled => true %></td>
+		</tr>
+		<tr>
+			<td>Group Name*:</td>
+			<td><%= text_field_tag :name,"", :class=>"required", :title=>"Group Name is required" %></td>
+		</tr>
+		
+		<tr>
+			<td>Description: </td>
+			<td><%= text_area_tag :description %></td>
+		</tr>
+		<tr>
+			<td></td>
+			<td>* Fields are mandatory</td>
+		</tr>
+		</table>
+		
+	</div>
+
+	<div class = "action" >
+		<%= submit_tag value = "Create Group" %>
+	</div>
+	
+	<% end %>
+	
+</div>

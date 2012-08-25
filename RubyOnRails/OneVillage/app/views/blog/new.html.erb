@@ -1,0 +1,27 @@
+<div id="main">
+	
+	<%= form_tag(:controller => "blog", :action => "createBlog") do |f| %>
+	<div class = "field">
+		<table>
+		<tr>
+			<td>User Id:</td>
+			<td><%= text_field_tag :name,cookies["_auth"] , :disabled => true %></td>
+		</tr>
+		<tr>
+			<td>Subject:</td>
+			<td><%= text_field_tag :subject,"",:class => "required",:title => "Subject cannot be empty" %></td>
+		</tr>
+		<tr>
+			<td>Description: </td>
+			<td><%= text_area_tag :description,"",:class => "required",:title => "Description cannot be empty" %></td>
+		</tr>
+		</table>
+	</div>
+
+	<div class = "action" >
+		<%= submit_tag value = "Create_Blog" %>
+	</div>
+	
+	<% end %>
+	
+</div>

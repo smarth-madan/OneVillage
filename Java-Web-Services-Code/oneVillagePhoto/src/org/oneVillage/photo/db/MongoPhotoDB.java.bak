@@ -1,0 +1,486 @@
+package org.oneVillage.photo.db;
+
+import java.util.ArrayList;
+import java.util.Properties;
+
+import javax.ws.rs.core.Response;
+
+import org.oneVillage.photo.data.Photo;
+
+import com.mongodb.BasicDBObject;
+import com.mongodb.DB;
+import com.mongodb.DBCollection;
+import com.mongodb.DBCursor;
+import com.mongodb.DBObject;
+import com.mongodb.Mongo;
+
+public class MongoPhotoDB {
+
+	//Logger logger = Logger.getLogger(MongoPhotoDB.class);
+
+	// mongodb setup - each collection should be thought of as a database
+	public static final String sCollection = "mongo.collection";
+	public static final String sDB = "mongo.db";
+	public static final String sHost = "mongo.host";
+
+	private DBCollection collection;
+	private Properties props;
+
+	public MongoPhotoDB() {
+	}
+
+	public MongoPhotoDB(Properties config) {
+		init(config);
+	}
+
+	/**
+	 * connection setup
+	 * 
+	 * @param props
+	 */
+	public void init(Properties props) {
+		// log.debug("---> ExampleClient.init()");
+
+		this.props = props;
+	}
+
+	/**
+	 * 
+	 */
+	public void release() {
+		collection = null;
+	}
+
+	/**
+	 * just like a jdbc connect - get me a connection to the data
+	 * 
+	 * @return
+	 */
+	private DBCollection connect() {
+		try {
+			if (collection != null && collection.getName() != null)
+				return collection;
+		} catch (Exception ex) {
+			collection = null;
+		}
+
+		try {
+			Mongo m = new Mongo(props.getProperty(sHost));
+			DB db = m.getDB(props.getProperty(sDB));
+			collection = db.getCollection(props.getProperty(sCollection));
+			if (collection == null)
+				throw new RuntimeException("Missing collection: " + props.getProperty(sCollection));
+
+			return collection;
+		} catch (Exception ex) {
+			// should never get here unless no directory is available
+			throw new RuntimeException("Unable to connect to mongodb on " + props.getProperty(sHost));
+		}
+	}
+
+	private DBObject convertToMongoForPhoto(Photo photo,DBCollection col) {
+		BasicDBObject rtn = new BasicDBObject();
+		//if (p.getBlogId() != 0)
+		//rtn.append("id",1);
+
+
+		int photoId = ReadFile.getID(0);
+		rtn.append("photoId",(""+photoId));
+		rtn.append("albumId",photo.getAlbumid());
+		rtn.append("userId",photo.getUserid());
+		rtn.append("latitude",photo.getLatitude());
+		rtn.append("longitude",photo.getLongitude());
+		rtn.append("description",photo.getDescription());
+		rtn.append("createdDate",photo.getCreatedDate());
+		rtn.append("url",photo.getUrl());
+
+		System.out.println("mongo object \n\n\n\n"+rtn.toString());
+		return rtn;
+
+	}
+
+	/***
+	 * 1. 
+	 * @param photo
+	 * @return
+	 */
+	public boolean addPhoto(Photo photo) {
+		boolean insertSuccessful = false;
+		System.out.println("Inside Mongo Add Photo");
+		try {
+			DBCollection col = connect();
+			System.out.println("albumId="+photo.getAlbumid());
+			System.out.println("userId="+photo.getUserid());
+			if (photo.getAlbumid() != null && photo.getUserid() != null){
+				DBObject dob = convertToMongoForPhoto(photo, col);
+				System.out.println("Inserting values");
+
+				DBCursor c=col.find();
+				System.out.println("size: "+c.size());
+				col.insert(dob);
+
+				System.out.println("Insertion success ");
+				insertSuccessful = true;
+				}
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			System.out.println("\n\n\n\n\n\nexception ocuured \n\n\n\n\n\n\n");
+			e.printStackTrace();
+		}
+		return insertSuccessful;
+
+	}
+	
+			
+	/***
+	 * 2.
+	 * @param album
+	 * @return
+	 */
+	public Response updatePhoto(Photo photo,String albumId) {
+		Response returnResponse = null;
+		try {
+			DBCollection col = connect();
+			System.out.println("Inside Photo Update");
+			System.out.println("albumId="+albumId);
+			System.out.println("userId="+photo.getUserid());
+			System.out.println("photoId="+photo.getPhotoid());
+			System.out.println("photoId="+photo.getCreatedDate());
+
+			
+			if (photo.getUserid() != null && photo.getPhotoid() != null){
+				//Find object
+				BasicDBObject findObject = new BasicDBObject();
+				findObject.append("albumId",albumId);
+				findObject.append("userId",photo.getUserid());
+				findObject.append("photoId",photo.getPhotoid());
+				
+				//Modify Object
+				BasicDBObject modifyObject = new BasicDBObject();
+				modifyObject.append("albumId",albumId);
+				modifyObject.append("userId",photo.getUserid());
+				modifyObject.append("photoId",photo.getPhotoid());
+				modifyObject.append("description",photo.getDescription());
+				modifyObject.append("latitude",photo.getLatitude());
+				modifyObject.append("longitude",photo.getLongitude());
+				modifyObject.append("createdDate",photo.getCreatedDate());
+
+				System.out.println("Updating values");
+				BasicDBObject c=(BasicDBObject) col.findAndModify(findObject,modifyObject);
+				if(c!=null && !c.isEmpty())
+				{
+					returnResponse = Response.status(200).entity("Photo Updtated Successfully").build();
+				}
+				else{
+					returnResponse = Response.status(404).entity("Photo Not found").build();
+				}
+			}
+			else{
+				returnResponse = Response.status(400).entity("Bad Request: Needs UserId, PhotoId and albumId").build();
+			}
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			System.out.println("\n\n\n\n\n\nexception ocuured \n\n\n\n\n\n\n");
+			e.printStackTrace();
+		}
+		return returnResponse;
+	}
+	
+	/***
+	 * 3.
+	 * @param album
+	 * @return
+	 */
+	public Response deletePhoto(String albumId,String userId,String photoId) {
+		Response returnResponse = null;
+		try {
+			DBCollection col = connect();
+			System.out.println("Inside Delete Photo");
+			if (albumId != null && userId!=null && photoId!=null){
+				BasicDBObject findObject = new BasicDBObject();
+				findObject.append("albumId",albumId);
+				findObject.append("userId",userId);
+				findObject.append("photoId",photoId);
+				
+				DBObject dbObject = findObject;
+
+				BasicDBObject responseDbObject =(BasicDBObject) col.findAndRemove(dbObject);
+				if(responseDbObject!=null && !responseDbObject.isEmpty())
+				{
+					returnResponse = Response.status(200).entity("Photo Deleted Successfully").build();
+				}
+				else{
+					returnResponse = Response.status(404).entity("Photo Not found. Incorrect combination of PhotoId, albumId and userId").build();
+				}
+			}
+			else{
+				returnResponse = Response.status(400).entity("Bad Request: Needs UserId, PhotoId and albumId to delete").build();
+				}
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			System.out.println("\n\n\n\n\n\nexception ocuured \n\n\n\n\n\n\n");
+			e.printStackTrace();
+		}
+		return returnResponse;
+
+	}
+	
+	/***
+	 * 4.
+	 * @param album
+	 * @return
+	 */
+	public ArrayList<Photo> getAllPhotosFromAlbum(String albumId) {
+		ArrayList<Photo> photoList = new ArrayList<Photo>();
+		try {
+			DBCollection col = connect();
+			System.out.println("Getting all photos from an Album");
+			System.out.println("Album Id="+albumId);
+			BasicDBObject findObject = new BasicDBObject();
+			findObject.append("albumId",albumId);
+			
+			DBCursor cursor=col.find(findObject);
+			System.out.println("Cursor size:"+cursor.size());
+			while(cursor.hasNext()){
+				System.out.println("Data found!!:)");
+				DBObject dbObject=cursor.next();
+				Photo photo = new Photo();
+				photo.setPhotoid((String)dbObject.get("photoId").toString());
+				photo.setAlbumid((String)dbObject.get("albumId").toString());
+				photo.setLatitude((String)dbObject.get("latitude"));
+				photo.setDescription((String)dbObject.get("description"));
+				photo.setLongitude((String)dbObject.get("longitude"));
+				photo.setUserid((String)dbObject.get("userId"));
+				photo.setCreatedDate((String)dbObject.get("createdDate"));
+				photo.setUrl((String)dbObject.get("url"));
+				photoList.add(photo);
+			}
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			System.out.println("\n\n\n\n\n\nexception ocuured \n\n\n\n\n\n\n");
+			e.printStackTrace();
+		}
+		return photoList;
+
+	}
+	
+	/***
+	 * 5.
+	 * @param album
+	 * @return
+	 */
+	public Photo getPhotoFromAlbum(String albumId,String photoId) {
+		
+		try {
+			DBCollection col = connect();
+			BasicDBObject photo = new BasicDBObject();
+			photo.append("albumId",albumId);
+			photo.append("photoId", photoId);
+			
+			DBCursor c = col.find(photo);
+			
+			if(c.hasNext()){
+				Photo returnPhoto = new Photo();
+				DBObject obj = c.next();
+				returnPhoto.setAlbumid((String) obj.get("albumId"));
+				returnPhoto.setDescription((String) obj.get("description"));
+				returnPhoto.setLatitude((String) obj.get("latitude"));
+				returnPhoto.setLongitude((String) obj.get("longitude"));
+				returnPhoto.setPhotoid((String) obj.get("photoId"));
+				returnPhoto.setCreatedDate((String) obj.get("createdDate"));
+				returnPhoto.setUrl((String) obj.get("url"));
+				returnPhoto.setUserid((String) obj.get("userId"));
+				
+				return returnPhoto;
+			}
+			else
+				return null;
+
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			System.out.println("\n\n\n\n\n\nexception ocuured \n\n\n\n\n\n\n");
+			e.printStackTrace();
+			return null;
+		}
+
+	}
+	/***
+	 * 6. 
+	 * @param album
+	 * @return
+	 */
+	public Response associatePhotoToArticle(String albumId,String photoId,String articleId,String tagger) {
+		Response returnResponse = null;
+		try {
+			DBCollection col = connect();
+						
+			if (albumId != null && photoId != null && articleId != null && tagger != null){
+				//Find object
+				BasicDBObject findObject = new BasicDBObject();
+				findObject.append("albumId",albumId);
+				findObject.append("photoId",photoId);
+				
+				DBCursor cursor=col.find(findObject);
+				System.out.println("Cursor size:"+cursor.size());
+				BasicDBObject modifyObject = new BasicDBObject();
+				while(cursor.hasNext()){
+					DBObject dbObject=cursor.next();
+					modifyObject.append("userId",(String)dbObject.get("userId"));
+					modifyObject.append("description",(String)dbObject.get("description"));
+					modifyObject.append("latitude",(String)dbObject.get("latitude"));
+					modifyObject.append("longitude",(String)dbObject.get("longitude"));
+					modifyObject.append("timeTaken",(String)dbObject.get("timeTaken"));
+					modifyObject.append("dateCreated",(String)dbObject.get("dateCreated"));
+					modifyObject.append("communityId",(String)dbObject.get("communityId"));
+					modifyObject.append("url",(String)dbObject.get("url"));
+					
+				}
+				//Modify Object
+			
+				modifyObject.append("albumId",albumId);
+				modifyObject.append("photoId",photoId);
+				modifyObject.append("articleId",articleId);
+				modifyObject.append("articleTagger",tagger);
+				
+				System.out.println("Tagging photo");
+				BasicDBObject c=(BasicDBObject) col.findAndModify(findObject,modifyObject);
+				if(c!=null && !c.isEmpty())
+				{
+					returnResponse = Response.status(200).entity("Photo associated to article "+articleId).build();
+				}
+				else{
+					returnResponse = Response.status(404).entity("Photo Not found").build();
+				}
+			}
+			else{
+				returnResponse = Response.status(400).entity("Bad Request: Needs articleId, PhotoId, albumId and tagger").build();
+			}
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			System.out.println("\n\n\n\n\n\nexception ocuured \n\n\n\n\n\n\n");
+			e.printStackTrace();
+		}
+		return returnResponse;
+	}
+	/***
+	 * 7. 
+	 * @param photo
+	 * @return
+	 */
+	public Response associatePhotoToCommunity(String albumId,String photoId,String communityId,String tagger) {
+		Response returnResponse = null;
+		try {
+			DBCollection col = connect();
+						
+			if (albumId != null && photoId != null && communityId != null && tagger != null){
+				//Find object
+				BasicDBObject findObject = new BasicDBObject();
+				findObject.append("albumId",albumId);
+				findObject.append("photoId",photoId);
+				
+				DBCursor cursor=col.find(findObject);
+				System.out.println("Cursor size:"+cursor.size());
+				BasicDBObject modifyObject = new BasicDBObject();
+				while(cursor.hasNext()){
+					DBObject dbObject=cursor.next();
+					modifyObject.append("userId",(String)dbObject.get("userId"));
+					modifyObject.append("description",(String)dbObject.get("description"));
+					modifyObject.append("latitude",(String)dbObject.get("latitude"));
+					modifyObject.append("longitude",(String)dbObject.get("longitude"));
+					modifyObject.append("timeTaken",(String)dbObject.get("timeTaken"));
+					modifyObject.append("articleId",(String)dbObject.get("articleId"));
+					modifyObject.append("url",(String)dbObject.get("url"));
+				
+				}
+				//Modify Object
+			
+				modifyObject.append("albumId",albumId);
+				modifyObject.append("photoId",photoId);
+				modifyObject.append("communityId",communityId);
+				modifyObject.append("communityTagger",tagger);
+				
+				System.out.println("Tagging photo");
+				BasicDBObject c=(BasicDBObject) col.findAndModify(findObject,modifyObject);
+				if(c!=null && !c.isEmpty())
+				{
+					System.out.println("Photo associated to community "+communityId);
+					returnResponse = Response.status(200).entity("Photo associated to community ").build();
+				}
+				else{
+					returnResponse = Response.status(404).entity("Photo Not found").build();
+				}
+			}
+			else{
+				returnResponse = Response.status(400).entity("Bad Request: Needs communityId, PhotoId, albumId and tagger").build();
+			}
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			System.out.println("\n\n\n\n\n\nexception ocuured \n\n\n\n\n\n\n");
+			e.printStackTrace();
+		}
+		return returnResponse;
+	}
+	
+	public ArrayList<Photo> getPhotoByCommunity(String communityId){
+		ArrayList<Photo> photoList = new ArrayList<Photo>();
+		System.out.println("Inside get Photo By Community");
+		try {
+			DBCollection col = connect();
+			BasicDBObject photo = new BasicDBObject();
+			photo.append("communityId",communityId);
+			DBCursor c = col.find(photo);
+			System.out.println("Cursor size:"+c.size());
+			while(c.hasNext()){
+				Photo returnPhoto = new Photo();
+				DBObject obj = c.next();
+				returnPhoto.setAlbumid((String) obj.get("albumId"));
+				returnPhoto.setDescription((String) obj.get("description"));
+				returnPhoto.setLatitude((String) obj.get("latitude"));
+				returnPhoto.setLongitude((String) obj.get("longitude"));
+				returnPhoto.setPhotoid((String) obj.get("photoId"));
+				returnPhoto.setCreatedDate((String) obj.get("createdDate"));
+				returnPhoto.setUrl((String) obj.get("url"));
+				returnPhoto.setUserid((String) obj.get("userId"));
+				
+				photoList.add(returnPhoto);
+			}
+			
+
+		} catch (Exception e) {
+			System.out.println("\n\n\n\n\n\nexception ocuured \n\n\n\n\n\n\n");
+			e.printStackTrace();
+			}
+		return photoList;
+	}
+
+	public ArrayList<Photo> getPhotoByArticle(String articleId){
+		ArrayList<Photo> photoList = new ArrayList<Photo>();
+		try {
+			DBCollection col = connect();
+			BasicDBObject photo = new BasicDBObject();
+			photo.append("articleId",articleId);
+			DBCursor c = col.find(photo);
+			System.out.println("Cursor size:"+c.size());
+			while(c.hasNext()){
+				Photo returnPhoto = new Photo();
+				DBObject obj = c.next();
+				returnPhoto.setAlbumid((String) obj.get("albumId"));
+				returnPhoto.setDescription((String) obj.get("description"));
+				returnPhoto.setLatitude((String) obj.get("latitude"));
+				returnPhoto.setLongitude((String) obj.get("longitude"));
+				returnPhoto.setPhotoid((String) obj.get("photoId"));
+				returnPhoto.setCreatedDate((String) obj.get("createdDate"));
+				returnPhoto.setUrl((String) obj.get("url"));
+				returnPhoto.setUserid((String) obj.get("userId"));
+				
+				photoList.add(returnPhoto);
+			}
+			
+
+		} catch (Exception e) {
+			System.out.println("\n\n\n\n\n\nexception ocuured \n\n\n\n\n\n\n");
+			e.printStackTrace();
+			}
+		return photoList;
+	}
+}

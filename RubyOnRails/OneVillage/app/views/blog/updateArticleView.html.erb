@@ -1,0 +1,21 @@
+<%= puts params %>
+<div id="main">
+<%= form_tag(:controller => "blog", :action => "updateArticle" , :id => params[:id] , :userid => params[:userid], :articleid=>params[:articleid] ) do |f| %>
+<table>
+<tr>
+	<td>User Id:</td>
+	<td><%=text_field_tag :userid,params[:userid], :disabled => true %> </td>
+</tr>
+<tr>
+	<td>Article Id:</td>
+	<td><%=text_field_tag :articleid, params[:articleid], :disabled => true %> </td>
+</tr>
+<tr>
+	<td>Content:</td>
+	<td><%= text_area_tag :content, params[:content]  %></td>
+</tr>
+</table>
+<%= submit_tag value = "Update Article" %>
+<% end %>
+
+</div>

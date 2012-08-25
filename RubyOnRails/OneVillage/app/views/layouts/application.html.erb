@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>OneVillage</title>
+  <%= stylesheet_link_tag "master" %>
+  <%= javascript_include_tag :defaults %>
+  <%= javascript_include_tag "lib/yahoo/yahoo-min" %>
+  <%= javascript_include_tag "lib/event/event-min" %>
+   <%= javascript_include_tag "jsvalidate" %>
+
+  <%= csrf_meta_tag %>
+</head>
+
+<body id="index">
+	<div id="banner">
+		<%= image_tag("oneVillage.jpg") %>
+		<%= @page_title || "One Village - Team Flair" %>	
+		<ul id="tab">
+			<li> <%= link_to "Blogs", home_blog_path %> </li>
+			<li> <%= link_to "Groups", home_group_path %> </li>
+			<li> <%= link_to "Photos", home_photo_path %> </li>
+		</ul>
+		<div id="session">
+			<% if !session["_auth"].nil? %>
+				<li><%= session["_auth"] %> <%= link_to "Sign out", :controller=>"test", :action => "sign_out" %></li>
+			<% else %>
+				<li><%= link_to "Sign in", "https://accounts.google.com/o/oauth2/auth?scope=https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile&state=email&redirect_uri=http://localhost:3000/home/index&response_type=token&client_id=931274347649.apps.googleusercontent.com" %></li>
+			<% end %>
+		</div>
+	</div>
+	
+	<div id="columns">
+
+		<div id="side" >
+			<p>
+				<%= link_to "Home", home_index_path %>
+			</p>
+			
+			<p>
+				<%= link_to "Contact", home_contact_path %>
+			</p>
+ 		</div>
+ 	</div>
+	 <%= yield %>
+ 	
+ </body>
+ 
+ </html>

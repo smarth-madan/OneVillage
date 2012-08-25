@@ -1,0 +1,31 @@
+<div id="main">
+	
+	<%= form_tag(:controller => "photo", :action => "updateAlbum") do |f| %>
+	<div class = "field">
+		<table>
+		<tr>
+			<td>Album Id:</td>
+			<td><%= text_field_tag :albumId, params[:id] %></td>
+		</tr>
+		<tr>
+			<td>User Id:</td>
+			<td><%= text_field_tag :userId,params[:userid] %></td>
+		</tr>
+		<tr>
+			<td>Album name: </td>
+			<td><%= text_field_tag :name,params[:name] %></td>
+		</tr>
+		<tr>
+			<td>Description:</td>
+			<td><%= text_area_tag :description,params[:description] %></td>
+		</tr>
+		</table>
+	</div>
+
+	<div class = "action" >
+		<%= submit_tag value = "Update Album" %>
+	</div>
+	
+	<% end %>
+	
+</div>

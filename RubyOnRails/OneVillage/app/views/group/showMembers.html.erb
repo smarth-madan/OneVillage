@@ -1,0 +1,34 @@
+<div id="main">
+	
+	<p>
+				<%= link_to "Group", home_group_path %>
+			</p>
+		
+	<h1> Displaying all members of Group - <%= @array[0]["groupId"]%></h1>
+		<%#=@array %>
+
+
+	
+	<table border="1" >
+		<tr>
+				<th>S no.</th>				
+				<th>Member Id</th>
+		
+		</tr>
+		<% @count=1 %>
+		<% @array.each do |array| %>
+		
+		
+				<tr>
+					<td>
+						<%= @count %>
+					</td>	
+					<td>
+						<%= array["userId"] %>
+					</td>
+				</tr>
+				<%@count=@count+1%>
+				<% end %>	
+	</table>
+	
+</div>

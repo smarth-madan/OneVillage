@@ -1,0 +1,48 @@
+<div id="main">
+	<!--
+		1) Need to redirect the page to get all blogs,
+		then display all the blogs as a link or just simple display in a table
+		and then user can feed in value/click on the blog to get its content
+		
+		2) Since the getBlog requires an ID to get the blog the user can manually feed the ID.		
+		-->
+	<h1>Here's your selected blog</h1>
+	
+		<%#= @result %>
+		
+		
+		<table border="1" >
+		<tr>
+				<th>ID</th>
+				<th>Subject</th>
+				<th>description</th>
+				<th>user</th>
+				<th>timestamp</th>
+		</tr>
+		<tr>
+			<td><%= @blogid %></td>
+			<td><%= @subject%></td>
+			<td><%= @description%></td>
+			<td><%= @userid %></td>
+			<td><%= @timestamp%></td>
+		</tr>
+		</table>
+	
+	<h2>What next do you want to do in the selected blog?</h2>
+	<p>
+		<%= link_to "Delete Blog", :controller => "blog" , :action => "deleteBlog", :id => @blogid , :userid => @userid %>
+	</p>
+
+	<p>
+		<%= link_to "Create Blog Entry", :controller => "blog" , :action => "newEntry", :id => @blogid , :userid => @userid %>
+	</p>
+
+	<p>
+		<%= link_to "Get Blog Entries", :controller => "blog" , :action => "getBlogEntries", :id => @blogid , :userid => @userid%>
+	</p>
+
+	<p>
+		<%= link_to "Delete Blog Entries", :controller => "blog" , :action => "deleteBlogEntries", :id => @blogid , :userid =>@userid %>
+	</p>
+
+</div>

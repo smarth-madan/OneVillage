@@ -1,0 +1,85 @@
+<div id="main">
+	<%#=@array %>
+	
+	<%= form_tag(:controller => "photo", :action => "getPhotoByArticle" , :articleId => @articleId) do |f| %>
+	<div class = "field">
+		<table>
+		<tr>
+			<td>Article Id:</td>
+			<td><%= text_field_tag :articleId %></td>
+		</tr>
+		</table>
+	</div>
+
+	<div class = "action" >
+		<%= submit_tag value = "Get Photo by Article" %>
+	</div>
+	
+	<% end %>
+	<br />
+	<br />
+	<br />
+	<div id="result">
+
+	
+
+	<%#=@array %>
+	<% if @array!=nil then%>
+	<% if @array.size()>0 then%>
+	
+	<h1> All Albums for the user </h1>
+	<table border="1" >
+		<tr>
+			<th>Album Id</th>
+			<th>Photo Id</th>
+			<th>Description</th>
+			<th>User Id</th>
+			<th>Date of creation</th>
+			<th>Latitude</th>
+			<th>Longitude</th>
+			<th>View Photos</th>
+		</tr>
+
+	<% @array.each do |array| %>
+		
+
+		<tr>
+	
+			<td>
+				<%= array["albumid"] %>
+			</td>
+			
+			<td>
+				<%= array["photoid"] %>
+			</td>
+			
+			<td>
+			<%=  array["description"] %>
+			</td>	
+			
+			<td>
+				<%= array["userid"] %>
+			</td>
+			
+			<td>
+			<%=  array["createdDate"] %>
+			</td>	
+			
+			<td>
+				<%= array["latitude"] %>
+			</td>
+			
+			<td>
+			<%=  array["longitude"] %>
+			</td>
+			<td>
+				<%= link_to "View Photo","http://localhost:8087/oneVillage/photos/"+array["url"] %>
+			</td>
+			
+			</tr>
+
+		<%end%>
+	</table>
+	<%end%>
+	<%end%>
+</div>

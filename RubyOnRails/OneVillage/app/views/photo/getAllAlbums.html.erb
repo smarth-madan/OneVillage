@@ -1,0 +1,69 @@
+<div id="main">
+
+	<h1> All Albums </h1>
+
+	<%#=@array %>
+
+	<table border="1" >
+		<tr>
+			<th>Album Id</th>
+			<th>Name</th>
+			<th>Description</th>
+			<th>User Id</th>
+			<th>Date of creation</th>
+			<th>Click to see Photos</th>
+			<th>Add Photo</th>
+			<th>Update</th>
+			<th>Delete</th>
+		</tr>
+
+	<% @array.each do |array| %>
+
+
+		<tr>
+	
+			<td>
+				<%= array["albumid"] %>
+			</td>
+			
+			<td>
+				<%= array["name"] %>
+			</td>
+			
+			<td>
+			<%=  array["description"] %>
+			</td>	
+			
+			<td>
+				<%= array["userid"] %>
+			</td>
+			
+			<td>
+			<%=  array["createdDate"] %>
+			</td>	
+			
+			<td>
+				<%= link_to "See Photos" , :controller => "photo" , :action => "getAllPhotosFromAlbumPage" , :id => array["albumid"],:userid => array["userid"] %>
+			</td>
+			
+			<td><% if array["userid"] == cookies["_auth"] %>
+				<%= link_to "Add New Photo" , :controller => "photo" , :action => "addPhotoPage" , :id => array["albumid"] ,:userid => array["userid"],:name => array["name"],:description => array["description"]%>
+				<% end %>
+			</td>
+			
+			<td>
+				<% if array["userid"] == cookies["_auth"] %>
+				<%= link_to "Update" , :controller => "photo" , :action => "updateAlbumPage" , :id => array["albumid"] ,:userid => array["userid"],:name => array["name"],:description => array["description"]%>
+				<% end %>
+			</td>
+			
+			<td>
+				<% if array["userid"] == cookies["_auth"] %>
+				<%= link_to "Delete" , :controller => "photo" , :action => "deleteAlbumPage" , :id => array["albumid"],:userid => array["userid"] %>
+				<% end %>
+			</td>
+			</tr>
+
+<%end%>
+	</table>
+</div>

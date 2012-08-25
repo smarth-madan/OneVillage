@@ -1,0 +1,21 @@
+<div id="main">
+	<% @blogid = params[:id] %>
+	<% @userid = cookies["_auth"] %>	
+	
+	<%= form_tag(:controller => "blog", :action => "createArticle" , :id => @blogid , :userid => @userid) do |f| %>
+	<div class = "field">
+		<table>
+		<tr>
+			<td>Content:</td>
+			<td><%= text_area_tag :content,"",:class=> "required",:title => "Please add some content " %></td>
+		</tr>
+		</table>
+	</div>
+
+	<div class = "action" >
+		<%= submit_tag value = "Create Article" %>
+	</div>
+	
+	<% end %>
+	
+</div>

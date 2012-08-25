@@ -1,0 +1,24 @@
+
+<div id="main">
+
+
+	<%= form_tag( :controller => "group" , :action => "getAllUserEvents" , :groupId => params[:groupId], :userId => @userId) do %>
+	
+	
+	
+		<div class = "field">
+		<table>
+		<tr>
+			<td>User ID:</td>
+			<td><%= text_field_tag :userId %></td>
+		</tr>
+		</table>
+		</div>
+		
+		<div class = "action" >
+		<%= submit_tag value = "Submit" %>
+		</div>
+		
+	<% end %>
+	
+</div>

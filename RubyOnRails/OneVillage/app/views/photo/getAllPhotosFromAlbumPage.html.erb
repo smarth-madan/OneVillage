@@ -1,0 +1,25 @@
+<div id="main">
+		
+	<%= form_tag(:controller => "photo", :action => "getAllPhotosFromAlbum" , :id => @blogid , :userid => @userid) do |f| %>
+	<div class = "field">
+		<table>
+			<tr>
+				<td>Album Id:</td>
+				<td><%= text_field_tag :albumId, params[:id] %></td>
+			</tr>		
+			<tr>
+				<td>User Id:
+				</td>
+				<td><%= text_field_tag :userId, params[:userid] %></td>
+			</tr>
+		</tr>
+		</table>
+	</div>
+
+	<div class = "action" >
+		<%= submit_tag value = "Get All Photos" %>
+	</div>
+	
+	<% end %>
+	
+</div>

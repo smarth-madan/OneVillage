@@ -1,0 +1,47 @@
+<div id="main">
+	
+	<%= form_tag(:controller => "photo", :action => "addPhoto") do |f| %>
+	<div class = "field">
+		<table>
+		<tr>
+			<td>Album Id:</td>
+			<td><%= text_field_tag :albumId,params[:id] %></td>
+		</tr>
+		<tr>
+			<td>User Id: </td>
+			<td><%= text_field_tag :userId,params[:userid] %></td>
+		</tr>
+		<tr>
+			<td>Latitude:</td>
+			<td><%= text_field_tag :latitude %></td>
+		</tr>
+		<tr>
+			<td>Longitude:</td>
+			<td><%= text_field_tag :longitude %></td>
+		</tr>
+		<tr>
+			<td>Description:</td>
+			<td><%= text_area_tag :decription %></td>
+		</tr>
+		<tr>
+			<td>Date(mm/dd/yyyy): </td>
+			<td><%= text_field_tag :createdDate %></td>
+		</tr>
+		<tr>
+			<td>File Path: </td>
+			<td><%= text_field_tag :filePath %></td>
+		</tr>
+		<tr>
+			<td>Photo:</td>
+			<td><%= file_field_tag 'file', :accept => 'image/png,image/gif,image/jpeg' %></td>
+		</tr>
+		</table>
+	</div>
+
+	<div class = "action" >
+		<%= submit_tag value = "Upload Photo" %>
+	</div>
+	
+	<% end %>
+	
+</div>

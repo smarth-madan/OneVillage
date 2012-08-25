@@ -1,0 +1,57 @@
+<div id = "main">
+	
+	<p>
+	<%= link_to "Group", home_group_path %>
+		</p>
+		
+	
+	<h1>Here's your selected group</h1>
+	
+	<table border="1" >
+		<tr>
+				<th>ID</th>
+				<th>Name</th>
+				<th>Description</th>
+				<th>Owner</th>
+				
+		</tr>
+		<tr>
+			<td><%= @groupId %></td>
+			<td><%= @name%></td>
+			<td><%= @description%></td>
+			<td><%= @userId %></td>
+			
+		</tr>
+	</table>
+	
+	<h2>What next do you want to do in the selected group?</h2>
+		
+	<p>
+		<% if @userid == cookies["_auth"] %>
+		<%= link_to "Delete Group" , :controller => "group" , :action => "deleteGroup", :groupId => @groupId , :userId => cookies["_auth"] %>
+		<% end %>
+	</p>
+	<p>
+		<%= link_to "Create Event" , :controller => "group" , :action => "newEvent", :groupId => @groupId , :userId => cookies["_auth"] %>
+	</p>
+	<p>
+		<%= link_to "Get All Events", :controller => "group" , :action => "getAllEvents", :groupId => @groupId %>
+	</p>
+	
+	<p>
+		<%= link_to "Show Members" , :controller => "group" , :action => "showMembers", :groupId => @groupId %>
+	</p>
+	
+	<p>
+		<%= link_to "Join Group", :controller => "group" , :action => "joinGroup", :groupId => @groupId, :userId => cookies["_auth"]%> 
+	</p>
+	<p>
+		<%= link_to "Unjoin Group", :controller => "group" , :action => "unjoinGroup", :groupId => @groupId, :userId => cookies["_auth"] %>
+	</p>
+
+	<p>
+		<%= link_to "Get All User Events", :controller => "group" , :action => "getAllUserEventsInput", :groupId => @groupId %>
+	</p>
+	
+	
+</div>

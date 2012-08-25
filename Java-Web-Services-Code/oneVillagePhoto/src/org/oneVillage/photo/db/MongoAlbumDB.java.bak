@@ -1,0 +1,303 @@
+package org.oneVillage.photo.db;
+
+import java.util.ArrayList;
+import java.util.Properties;
+
+import javax.ws.rs.core.Response;
+
+import org.oneVillage.photo.data.Album;
+
+import com.mongodb.BasicDBObject;
+import com.mongodb.DB;
+import com.mongodb.DBCollection;
+import com.mongodb.DBCursor;
+import com.mongodb.DBObject;
+import com.mongodb.Mongo;
+
+public class MongoAlbumDB {
+	//Logger logger = Logger.getLogger(MongoAlbumDB.class);
+
+	// mongodb setup - each collection should be thought of as a database
+	public static final String sCollection = "mongo.collection";
+	public static final String sDB = "mongo.db";
+	public static final String sHost = "mongo.host";
+
+	private DBCollection collection;
+	private Properties props;
+
+	public MongoAlbumDB() {
+	}
+
+	public MongoAlbumDB(Properties config) {
+		init(config);
+	}
+
+	/**
+	 * connection setup
+	 * 
+	 * @param props
+	 */
+	public void init(Properties props) {
+		// log.debug("---> ExampleClient.init()");
+
+		this.props = props;
+	}
+
+	/**
+	 * 
+	 */
+	public void release() {
+		collection = null;
+	}
+
+	/**
+	 * just like a jdbc connect - get me a connection to the data
+	 * 
+	 * @return
+	 */
+	private DBCollection connect() {
+		try {
+			if (collection != null && collection.getName() != null)
+				return collection;
+		} catch (Exception ex) {
+			collection = null;
+		}
+
+		try {
+			Mongo m = new Mongo(props.getProperty(sHost));
+			DB db = m.getDB(props.getProperty(sDB));
+			collection = db.getCollection(props.getProperty(sCollection));
+			if (collection == null)
+				throw new RuntimeException("Missing collection: " + props.getProperty(sCollection));
+
+			return collection;
+		} catch (Exception ex) {
+			// should never get here unless no directory is available
+			throw new RuntimeException("Unable to connect to mongodb on " + props.getProperty(sHost));
+		}
+	}
+
+
+	private DBObject convertToMongoForAlbum(Album album,DBCollection col) {
+		BasicDBObject rtn = new BasicDBObject();
+		//if (p.getBlogId() != 0)
+		//rtn.append("id",1);
+
+
+		int albumId = ReadFile.getID(0);
+		rtn.append("albumId",(""+albumId));
+		rtn.append("userId",album.getUserid());
+		rtn.append("name",album.getName());
+		rtn.append("description",album.getDescription());
+		rtn.append("dateCreated",album.getCreatedDate());
+
+		System.out.println("mongo object \n\n\n\n"+rtn.toString());
+		return rtn;
+
+	}
+
+	/***
+	 * 2. 
+	 * @param album
+	 * @return
+	 */
+	public String createAlbum(Album album) {
+		String albumCreated = "NC";
+		try {
+			DBCollection col = connect();
+
+			if (album.getUserid() != null){
+				BasicDBObject dbObject = new BasicDBObject();
+
+				int albumId = ReadFile.getID(0);
+				dbObject.append("albumId",(""+albumId));
+				dbObject.append("userId",album.getUserid());
+				dbObject.append("name",album.getName());
+				dbObject.append("description",album.getDescription());
+				dbObject.append("dateCreated",album.getCreatedDate());
+				DBObject dob = dbObject;
+				System.out.println("Inserting values");
+
+				DBCursor c=col.find();
+				System.out.println("size: "+c.size());
+				col.insert(dob);
+
+
+				while(c.hasNext()){
+					System.out.println("values: "+c.next()+"collection name: "+col);
+				}
+				//System.out.println("result"+w.toString());
+
+				System.out.println("Inserted successfully ");
+				albumCreated = String.valueOf(albumId);
+			}
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			System.out.println("\n\n\n\n\n\nexception ocuured \n\n\n\n\n\n\n");
+			e.printStackTrace();
+		}
+		return albumCreated;
+
+	}
+
+	/***
+	 * 3.
+	 * @param album
+	 * @return
+	 */
+	public Response updateAlbum(Album album, String albumId) {
+		Response returnResponse = null;
+		try {
+			DBCollection col = connect();
+
+			if (album.getUserid() != null){
+				BasicDBObject findObject = new BasicDBObject();
+				findObject.append("albumId",albumId);
+				findObject.append("userId",album.getUserid());
+				System.out.println("albumId===="+albumId);
+				System.out.println("userId====="+album.getUserid());
+				System.out.println("description====="+album.getDescription());
+				
+				BasicDBObject modifyObject = new BasicDBObject();
+				modifyObject.append("albumId",albumId);
+				modifyObject.append("userId",album.getUserid());
+				modifyObject.append("name",album.getName());
+				modifyObject.append("description",album.getDescription());
+				modifyObject.append("createdDate",album.getCreatedDate());
+				
+				System.out.println("Inserting values");
+				DBObject q=findObject;
+				DBObject u=modifyObject;
+				System.out.println("query-----"+q.toString());
+				System.out.println("u--------"+u.toString());
+				BasicDBObject c=(BasicDBObject) col.findAndModify(q,u);
+				if(c!=null && !c.isEmpty())
+				{
+					returnResponse = Response.status(200).entity("Album Updtated Successfully").build();
+				}
+				else{
+					returnResponse = Response.status(404).entity("Album Not found").build();
+				}
+			}
+			else{
+				returnResponse = Response.status(400).entity("Bad Request").build();
+			}
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			System.out.println("\n\n\n\n\n\nexception ocuured \n\n\n\n\n\n\n");
+			e.printStackTrace();
+		}
+		return returnResponse;
+	}
+
+	/***
+	 * 4.
+	 * @param album
+	 * @return
+	 */
+	public Response deleteAlbum(String albumId,String userId) {
+		Response returnResponse = null;
+		System.out.println("Inside Delete Album");
+		try {
+			DBCollection col = connect();
+
+			if (userId != null){
+				BasicDBObject findObject = new BasicDBObject();
+				findObject.append("albumId",albumId);
+				findObject.append("userId",userId);
+				System.out.println("albumId===="+albumId);
+				System.out.println("userId====="+userId);
+				DBObject dbObject = findObject;
+
+				BasicDBObject responseDbObject =(BasicDBObject) col.findAndRemove(dbObject);
+				if(responseDbObject!=null && !responseDbObject.isEmpty())
+				{
+					returnResponse = Response.status(200).entity("Album Deleted Successfully").build();
+				}
+				else{
+					returnResponse = Response.status(404).entity("Album Not found").build();
+				}
+			}
+			else{
+				returnResponse = Response.status(400).entity("Bad Request").build();
+			}
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			System.out.println("\n\n\n\n\n\nexception ocuured \n\n\n\n\n\n\n");
+			e.printStackTrace();
+		}
+		return returnResponse;
+
+	}
+
+	/***
+	 * 5.
+	 * @param album
+	 * @return
+	 */
+	public ArrayList<Album> getAllAlbums() {
+		ArrayList<Album> albumList = new ArrayList<Album>();
+		try {
+			DBCollection col = connect();
+			System.out.println("Getting all Albums");
+
+			DBCursor cursor=col.find();
+
+			System.out.println("Cursor Size:"+cursor.size());
+			
+			while(cursor.hasNext()){
+				DBObject dbObject=cursor.next();
+				Album album = new Album();
+				album.setAlbumid((String)dbObject.get("albumId").toString());
+				album.setName((String)dbObject.get("name"));
+				album.setDescription((String)dbObject.get("description"));
+				album.setUserid((String)dbObject.get("userId"));
+				album.setCreatedDate((String)dbObject.get("dateCreated"));
+				albumList.add(album);
+			}
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			System.out.println("\n\n\n\n\n\nexception ocuured \n\n\n\n\n\n\n");
+			e.printStackTrace();
+		}
+		return albumList;
+
+	}
+
+	/***
+	 * 6.
+	 * @param album
+	 * @return
+	 */
+	public ArrayList<Album> getAllAlbumsByUser(String userId) {
+		ArrayList<Album> albumList = new ArrayList<Album>();
+		try {
+			DBCollection col = connect();
+			System.out.println("Getting all Albums by user");
+			System.out.println("userId="+userId);
+			BasicDBObject bObject=new BasicDBObject();
+			bObject.append("userId", userId);
+			DBObject d=bObject;
+			DBCursor cursor=col.find(d);
+			System.out.println("Cursor size:"+cursor.size());
+			while(cursor.hasNext()){
+				DBObject dbObject=cursor.next();
+				Album album = new Album();
+				album.setAlbumid((String)dbObject.get("albumId").toString());
+				album.setName((String)dbObject.get("name"));
+				album.setDescription((String)dbObject.get("description"));
+				album.setUserid((String)dbObject.get("userId"));
+				album.setCreatedDate((String)dbObject.get("dateCreated"));
+				albumList.add(album);
+			}
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			System.out.println("\n\n\n\n\n\nexception ocuured \n\n\n\n\n\n\n");
+			e.printStackTrace();
+		}
+		return albumList;
+
+	}
+	
+	
+}

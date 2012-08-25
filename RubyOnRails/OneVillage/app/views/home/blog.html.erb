@@ -1,0 +1,16 @@
+
+<div id="main">
+	<h1>Welcome to the Blog strand</h1>
+	<h2>Please pick an option, <%= debugger
+			session["_auth"] %></h2>
+
+	<p>
+		<%= link_to "Create Blog" , :controller => "home" , :action => "createblog" %>
+	</p>
+
+	<p>
+		<%= link_to "Get All Blogs", :controller => "home" , :action => "getallblogs" %>
+	</p>
+
+	
+</div>

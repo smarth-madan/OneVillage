@@ -1,0 +1,46 @@
+<div id="main">
+<p>
+			<%= link_to "Group", home_group_path %>
+		</p>
+	<h1> All Groups</h1>
+
+	<%#=@array %>
+
+	
+<table border="1" >
+		<tr>
+			<th>Link</th>
+			<th>ID</th>
+			<th>Subject</th>
+			<th>Description</th>
+			<th>Owner</th>
+		</tr>
+
+	<% @array.each do |array| %>
+
+
+		<tr>
+	
+			<td>
+				<%= link_to "Get this group" , :controller => "group" , :action => "getGroup" , :id => array["groupId"] %>
+			</td>
+			<td>
+				<%= array["groupId"] %>
+			</td>	
+			<td>
+				<%= array["name"] %>
+			</td>
+			<td>
+			<%=  array["description"] %>
+			</td>	
+			<td>
+						<%=  array["userId"] %>
+			</td>
+</tr>
+
+	<%end%>
+
+
+	</table>
+
+</div>

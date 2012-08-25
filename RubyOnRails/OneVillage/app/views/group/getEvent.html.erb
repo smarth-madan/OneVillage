@@ -1,0 +1,42 @@
+<div id="main">
+	
+	
+	<h1>Here's your selected event</h1>
+	
+	<%#= @result%>
+	
+	<table border="1" >
+		<tr>
+						<th>Event Id</th>				
+						<th>Group Id</th>
+						<th>Topic</th>
+						<th>Location</th>
+						<th>Start Time ID</th>
+						<th>End Time</th>
+						<th>Content</th>
+						<th>Owner ID</th>
+						<th>Time Created</th>					
+		</tr>
+		<tr>
+			<td><%= @eventId%></td>
+			<td><%= @groupId%></td>
+			<td><%= @topic%></td>
+			<td><%= @location%></td>
+			<td><%= @startTime%></td>
+			<td><%= @endTime%></td>
+			<td><%= @content%></td>
+			<td><%= @userId%></td>
+			<td><%= @timestamp%></td>
+		</tr>
+	</table>
+	
+	<h2>What next do you want to do in the selected event?</h2>
+
+	
+	<p>
+		<%= link_to "Delete Event", :controller => "group" , :action => "deleteEvent" , :userId => @userId , :eventId => @eventId , :groupId => @groupId %>
+	</p>
+	<p>
+			<%= link_to "Update Event", :controller => "group" , :action => "updateEventView" , :userId => @userId , :eventId => @eventId , :groupId => @groupId, :topic => @topic, :content => @content, :startTime => @startTime, :endTime => @endTime, :location => @location %>
+	</p>
+</div>

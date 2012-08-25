@@ -1,0 +1,44 @@
+<div id="main">
+
+	<h1> All Blogs </h1>
+
+	<%#=@array %>
+
+	<table border="1" >
+		<tr>
+			<th>Link</th>
+			<th>ID</th>
+			<th>Subject</th>
+			<th>Description</th>
+		</tr>
+
+	<% @array.each do |array| %>
+
+
+		<tr>
+	
+			<td>
+				<%= link_to "Get this blog" , :controller => "blog" , :action => "getBlog" , :id => array["blogid"] %>
+			</td>
+			<td>
+				<%= array["blogid"] %>
+			</td>	
+			<td>
+				<%= array["subject"] %>
+			</td>
+			<td>
+			<%=  array["description"] %>
+			</td>	
+			<td>
+				<% if  array["userid"] == cookies["_auth"] %>
+					 owner 
+				<% end %>
+			</td>
+		</tr>
+
+	<%end%>
+
+
+	</table>
+
+</div>

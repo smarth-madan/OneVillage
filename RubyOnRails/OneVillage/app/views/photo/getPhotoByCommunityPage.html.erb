@@ -1,0 +1,21 @@
+<div id="main">
+	<% @blogid = params[:id] %>
+	<% @userid = params[:userid] %>	
+	
+	<%= form_tag(:controller => "photo", :action => "getPhotoByCommunity" , :id => @blogid , :userid => @userid) do |f| %>
+	<div class = "field">
+		<table>
+		<tr>
+			<td>Group Id:</td>
+			<td><%= text_field_tag :communityId %></td>
+		</tr>
+		</table>
+	</div>
+
+	<div class = "action" >
+		<%= submit_tag value = "Get Photo by Group" %>
+	</div>
+	
+	<% end %>
+	
+</div>

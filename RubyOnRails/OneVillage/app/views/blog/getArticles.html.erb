@@ -1,0 +1,54 @@
+<%= stylesheet_link_tag "blog" %>
+<div id="main" class="a">
+
+	<h1> Articles </h1>
+
+	<%#=@array %>
+
+	<table id="articles" border="1" >
+		<tr>
+			<th>ID</th>
+			<th>Content</th>
+			<th>User ID</th>
+			<th>Timestamp</th>
+			<th>Delete</th>
+			<th>Update</th>
+		</tr>
+
+	<% @array.each do |array| %>
+
+	
+		<tr>
+			<td>
+				<%= array["articleid"] %>
+			</td>
+			
+			<td>
+			<%= array["content"] %>
+			</td>
+			
+			<td>
+			<%= array["userid"] %>
+			</td>
+		
+			
+			<td>
+			<%= array["timestamp"] %>
+			</td>
+			<td>
+				<% if array["userid"] == cookies["_auth"] %>
+				<%= link_to "Delete" , :controller => "blog" , :action => "deleteArticle" , :id => @blogid, :entryid => array["articleid"] ,:userid => @userid %>
+				<% end %>
+			</td>
+			<td>
+				<% if array["userid"] == cookies["_auth"] %>
+				<%= link_to "Update" , :controller => "blog" , :action => "updateArticleView" , :id => @blogid, :articleid => array["articleid"] ,:userid => @userid, :content => array["content"] %>
+				<% end %>
+			</td>
+		
+	<%end%>
+
+
+	</table>
+
+</div>

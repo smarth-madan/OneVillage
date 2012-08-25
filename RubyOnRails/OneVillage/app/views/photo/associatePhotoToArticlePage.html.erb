@@ -1,0 +1,31 @@
+<div id="main">
+	
+	<%= form_tag(:controller => "photo", :action => "associatePhotoToArticle") do |f| %>
+	<div class = "field">
+		<table>
+		<tr>
+			<td>Article Id:</td>
+			<td><%= text_field_tag :articleId %></td>
+		</tr>
+		<tr>
+			<td>User Id:</td>
+			<td><%= text_field_tag :userId, params[:userid] %></td>
+		</tr>
+		<tr>
+			<td>Album Id:</td>
+			<td><%= text_field_tag :albumId, params[:id]%></td>
+		</tr>
+		<tr>
+			<td>Photo Id: </td>
+			<td><%= text_field_tag :photoId, params[:photoid] %></td>
+		</tr>
+		</table>
+	</div>
+
+	<div class = "action" >
+		<%= submit_tag value = "Tag Photo to Article" %>
+	</div>
+	
+	<% end %>
+	
+</div>

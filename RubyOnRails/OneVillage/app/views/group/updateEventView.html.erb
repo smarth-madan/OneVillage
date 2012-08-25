@@ -1,0 +1,37 @@
+<%= puts params %>
+<div id="main">
+<%= form_tag(:controller => "group", :action => "updateEvent" , :groupId => params[:groupId] , :userId => params[:userId], :eventId=>params[:eventId] ) do |f| %>
+<table>
+<tr>
+	<td>User Id:</td>
+	<td><%=text_field_tag :userId,params[:userId], :disabled => true %> </td>
+</tr>
+<tr>
+	<td>Event Id:</td>
+	<td><%=text_field_tag :eventId, params[:eventId], :disabled => true %> </td>
+</tr>
+<tr>
+	<td>Topic:</td>
+	<td><%=text_field_tag :topic, params[:topic] %> </td>
+</tr>
+<tr>
+	<td>Start Time:</td>
+	<td><%=text_field_tag :startTime, params[:startTime] %> </td>
+</tr>
+<tr>
+	<td>End Time:</td>
+	<td><%=text_field_tag :endTime, params[:endTime] %> </td>
+</tr>
+<tr>
+	<td>Location:</td>
+	<td><%=text_field_tag :location, params[:location] %> </td>
+</tr>
+<tr>
+	<td>Content:</td>
+	<td><%= text_area_tag :content, params[:content]  %></td>
+</tr>
+</table>
+<%= submit_tag value = "Update Event" %>
+<% end %>
+
+</div>

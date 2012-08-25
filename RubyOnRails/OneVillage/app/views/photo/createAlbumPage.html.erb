@@ -1,0 +1,35 @@
+<div id="main">
+	
+	<%= form_tag(:controller => "photo", :action => "createAlbum") do |f| %>
+	<div class = "field">
+		<table>
+		<tr>
+			<td>User Id:</td>
+			<td><%= text_field_tag :userId,cookies["_auth"] , :disabled => true %></td>
+		</tr>
+		<tr>
+			<td>Album name*: </td>
+			<td><%= text_field_tag :name,"", :class=>"required", :title=>"Album Name is required"   %></td>
+		</tr>
+		<tr>
+			<td>Description:</td>
+			<td><%= text_area_tag :description %></td>
+		</tr>
+		<tr>
+			<td>Date(mm/dd/yyyy): </td>
+			<td><%= text_field_tag :createdDate %></td>
+		</tr>
+		<tr>
+			<td></td>
+			<td>* fields are required</td>
+		</tr>
+		</table>
+	</div>
+
+	<div class = "action" >
+		<%= submit_tag value = "Create Album" %>
+	</div>
+	
+	<% end %>
+	
+</div>

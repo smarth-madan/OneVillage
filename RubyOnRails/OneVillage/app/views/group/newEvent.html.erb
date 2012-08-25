@@ -1,0 +1,44 @@
+<div id="main">
+	<% @groupId = params[:groupId] %>
+	<% @userId = params[:userId] %>
+	<%= form_tag( :controller => "group" , :action => "createEvent" , :groupId => @groupId , :userId => @userId ) do %>
+	<div class = "field">
+		<table>
+		<tr>
+			<td>Name*:</td>
+			<td><%= text_field_tag :topic,"",:class=>"required", :title=>"Event Name is required"  %></td>
+		</tr>
+				
+		
+		<tr>
+			<td>Location: </td>
+			<td><%= text_field_tag :location %></td>
+		</tr>
+	
+		<tr>
+			<td>Start Time*: </td>
+			<td><%= text_field_tag :startTime,"",:class=>"required", :title=>"Start Time is required"  %></td>
+		</tr>
+		<tr>
+			<td>End Time*: </td>
+			<td><%= text_field_tag :endTime,"", :class=>"required", :title=>"End Time is required" %></td>
+		</tr>
+		
+		<tr>
+					<td>Content: </td>
+					<td><%= text_area_tag :content %></td>
+		</tr>
+		<tr>
+				<td></td>
+				<td>* fields are mandatory</td>
+		</tr>
+		</table>
+	</div>
+
+	<div class = "action" >
+		<%= submit_tag value = "Create_Event" %>
+	</div>
+	
+	<% end %>
+	
+</div>

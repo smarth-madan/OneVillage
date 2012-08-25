@@ -1,0 +1,112 @@
+<div id="main">
+	<%#=@array %>
+	
+	<%= form_tag(:controller => "photo", :action => "getAllPhotosFromAlbum" , :articleId => @articleId) do |f| %>
+	<div class = "field">
+		<table>
+		<tr>
+			<td>Album Id:</td>
+			<td><%= text_field_tag :albumId %></td>
+		</tr>
+		</table>
+	</div>
+
+	<div class = "action" >
+		<%= submit_tag value = "Get Photos" %>
+	</div>
+	
+	<% end %>
+	<br />
+	<br />
+	<br />
+	<div id="result">
+
+	
+
+	<%#=@array %>
+	<% if @array!=nil then%>
+	<% if @array.size()>0 then%>
+	
+	<h1> All Photos for the album </h1>
+	<table border="1" >
+		<tr>
+			<th>Album Id</th>
+			<th>Photo Id</th>
+			<th>Description</th>
+			<th>User Id</th>
+			<th>Date of creation</th>
+			<th>Latitude</th>
+			<th>Longitude</th>
+			<th>View Photos</th>
+			<th>Update Photo</th>
+			<th>Delete Photo</th>
+			<th>Tag to article</th>
+			<th>Tag to group</th>
+			<th>View on Map</th>
+		</tr>
+
+	<% @array.each do |array| %>
+
+		<tr>
+	
+			<td>
+				<%= array["albumid"] %>
+			</td>
+			
+			<td>
+				<%= array["photoid"] %>
+			</td>
+			
+			<td>
+			<%=  array["description"] %>
+			</td>	
+			
+			<td>
+				<%= array["userid"] %>
+			</td>
+			
+			<td>
+			<%=  array["createdDate"] %>
+			</td>	
+			
+			<td>
+				<%= array["latitude"] %>
+			</td>
+			
+			<td>
+			<%=  array["longitude"] %>
+			</td>
+			<td>
+				<% if (array["url"].nil?) %>
+				<%		@url = "";  %>
+				<%	else  %>
+				<%		@url =array["url"]  %>
+				<% end %>
+				<%= link_to "View Photo","http://localhost:8087/oneVillage/photos/"+@url %>
+			</td>
+			<td>
+				<% if array["userid"] == cookies["_auth"] %>
+				<%= link_to "Update Photo", :controller => "photo" , :action => "updatePhotoPage" , :id => array["albumid"] ,:userid => array["userid"],:userid => array["userid"],:description => array["description"],:photoid => array["photoid"], :createdDate => array["createdDate"],:latitude => array["latitude"],:longitude => array["longitude"]%>
+				<% end %>
+			</td>
+			<td>
+				<% if array["userid"] == cookies["_auth"] %>
+				<%= link_to "Delete Photo", :controller => "photo" , :action => "deletePhotoPage" , :id => array["albumid"] ,:userid => array["userid"],:photoid=> array["photoid"]%>
+				<% end %>
+			</td>
+			<td>
+				<%= link_to "Tag to Article", :controller => "photo" , :action => "associatePhotoToArticlePage" , :id => array["albumid"] ,:userid => array["userid"],:photoid => array["photoid"]%>
+			</td>
+			<td>
+				<%= link_to "Tag to Group", :controller => "photo" , :action => "associatePhotoToCommunityPage" ,:id => array["albumid"] ,:userid => array["userid"],:photoid => array["photoid"]%>
+			</td>
+			<td>
+				<%= link_to "View on Map", :controller => "photo" , :action => "viewMap" ,:lat => array["latitude"] ,:lon => array["longitude"]%>
+			</td>
+			</tr>
+
+		<%end%>
+	</table>
+	<%end%>
+	<%end%>
+</div>

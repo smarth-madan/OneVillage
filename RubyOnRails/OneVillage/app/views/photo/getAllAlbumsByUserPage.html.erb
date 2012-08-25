@@ -1,0 +1,81 @@
+<div id="main">
+	
+	<%= form_tag(:controller => "photo", :action => "getAllAlbumsByUser") do |f| %>
+	<div class = "field">
+		<table>
+		<tr>
+			<td>User Id:</td>
+			<td><%= text_field_tag :userId %></td>
+		</tr>
+		</table>
+	</div>
+
+	<div class = "action" >
+		<%= submit_tag value = "Get Albums" %>
+	</div>
+	
+	<% end %>
+</div>
+<div id="result">
+
+	
+
+	<%#=@array %>
+	<% if @array!=nil then%>
+	<% if @array.size()>0 then%>
+	<h1> All Albums for the user </h1>
+	<table border="1" >
+		<tr>
+			<th>Album Id</th>
+			<th>Name</th>
+			<th>Description</th>
+			<th>User Id</th>
+			<th>Date of creation</th>
+			<th>Click to see Photos</th>
+			<th>Update</th>
+			<th>Delete</th>
+		</tr>
+
+	<% @array.each do |array| %>
+
+
+		<tr>
+	
+			<td>
+				<%= array["albumid"] %>
+			</td>
+			
+			<td>
+				<%= array["name"] %>
+			</td>
+			
+			<td>
+			<%=  array["description"] %>
+			</td>	
+			
+			<td>
+				<%= array["userid"] %>
+			</td>
+			
+			<td>
+			<%=  array["createdDate"] %>
+			</td>	
+			
+			<td>
+				<%= link_to "See Photos" , :controller => "photo" , :action => "getAllPhotosFromAlbum" , :id => array["albumid"] %>
+			</td>
+			
+			<td>
+				<%= link_to "Update" , :controller => "photo" , :action => "getAllPhotosFromAlbum" , :id => array["albumid"] %>
+			</td>
+			
+			<td>
+				<%= link_to "Delete" , :controller => "photo" , :action => "getAllPhotosFromAlbum" , :id => array["albumid"] %>
+			</td>
+			</tr>
+
+		<%end%>
+	</table>
+	<%end%>
+	<%end%>
+</div>

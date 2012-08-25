@@ -1,0 +1,70 @@
+#banner {
+background:#736AFF;
+padding-top: 10px;
+padding-bottom: 10px;
+border-bottom: 2px solid;
+font: small-caps 40px/40px "Times New Roman", serif;
+color: #282;
+text-align: center;
+}
+#banner img {
+float: left;
+height:120px;
+width:120px;
+}
+
+#banner li{
+	display: inline;
+	border: solid;
+	border-width: 1px 1px 0 1px;
+	margin: 0 0.5em 0 0;
+}
+
+#session{
+	float:right;
+	color: #004B91;
+	font-family: Arial,sans-serif;
+	font-size: 18px;
+	font-weight: normal;
+	line-height: 120%;
+	border-width: 0px 0px 0px 0px;
+	position:relative;
+	top:-12px;
+}
+
+#session li{
+	display: inline;
+	border: solid;
+	border-width: 0px;
+	margin: 0 0.5em 0 0;
+}
+
+#columns {
+background: #566D7E;
+}
+#main {
+margin-left: 10em;
+padding-top: 4ex;
+padding-left: 5em;
+background: white;
+}
+#side {
+float: left;
+padding-top: 1em;
+padding-left: 1em;
+padding-bottom: 1em;
+width: 9em;
+background: #566D7E;
+}
+#side a {
+color: #bfb;
+font-size: small;
+}
+
+#error {
+color:red;
+}
+
+#tab{
+margin-bottom:0em;
+}
